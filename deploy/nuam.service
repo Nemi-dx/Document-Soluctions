@@ -1,0 +1,18 @@
+# /etc/systemd/system/nuam.service
+# Mantiene la aplicación corriendo con gunicorn y la reinicia si se cae o si reinicia el servidor.
+[Unit]
+Description=NUAM (gunicorn)
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/nuamProyecto
+EnvironmentFile=/etc/nuam.env
+ExecStart=/home/ubuntu/nuamProyecto/venv/bin/gunicorn nuamProyecto.wsgi:application \
+    --workers 2 --bind 127.0.0.1:8000 --timeout 60
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

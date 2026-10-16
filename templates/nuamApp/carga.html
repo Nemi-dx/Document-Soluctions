@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block titulo %}Carga masiva{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Carga masiva de certificados
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <form method="post" enctype="multipart/form-data" class="card p-3">
+      {% csrf_token %}
+      <p class="small text-body-secondary">
+        El sistema lee cada PDF y extrae RUT, nombre, año tributario, tipo y monto. Los certificados leídos
+        correctamente quedan en estado <strong>Procesado</strong> para que los revises y valides. Si un archivo
+        falla, los demás se procesan igual.
+      </p>
+      {% for campo in form %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+        {{ campo }}
+        {% if campo.help_text %}<div class="form-text">{{ campo.help_text }}</div>{% endif %}
+        {% for e in campo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-2">
+        <input type="submit" class="btn btn-info" value="Procesar certificados">
+        <a href="{% url 'certificados' %}" class="btn btn-outline-secondary">Volver</a>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-lg-7">
+    {% if resultados %}
+    <div class="card card-body">
+      <h2 class="h5">Resultado</h2>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Archivo</th><th>Resultado</th><th>Detalle</th></tr></thead>
+        <tbody>
+          {% for r in resultados %}
+          <tr>
+            <td>{{ r.archivo }}</td>
+            <td>{% if r.ok %}<span class="badge text-bg-success">Procesado</span>{% else %}<span class="badge text-bg-danger">Rechazado</span>{% endif %}</td>
+            <td class="small">{{ r.motivo }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

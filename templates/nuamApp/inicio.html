@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Calificaciones tributarias
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md">
+    <div class="card card-body h-100">
+      <div class="text-body-secondary small">Certificados</div>
+      <div class="fs-2 num text-start">{{ total }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card card-body h-100 border-info">
+      <div class="text-body-secondary small">Procesados</div>
+      <div class="fs-2 num text-start text-info-emphasis">{{ procesados }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card card-body h-100 border-success">
+      <div class="text-body-secondary small">Validados</div>
+      <div class="fs-2 num text-start text-success">{{ validados }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card card-body h-100 border-warning">
+      <div class="text-body-secondary small">Pendientes</div>
+      <div class="fs-2 num text-start text-warning-emphasis">{{ pendientes }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card card-body h-100 border-danger">
+      <div class="text-body-secondary small">Rechazados</div>
+      <div class="fs-2 num text-start text-danger">{{ rechazados }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2">
+  {% if puede.escribir_certificados %}
+  <a href="{% url 'certificado_carga' %}" class="btn btn-info"><i class="bi bi-cloud-upload"></i> Carga masiva de PDF</a>
+  <a href="{% url 'certificado_nuevo' %}" class="btn btn-outline-info"><i class="bi bi-file-earmark-plus"></i> Agregar certificado</a>
+  {% endif %}
+  <a href="{% url 'certificados' %}" class="btn btn-outline-secondary">Ver certificados</a>
+  <a href="{% url 'calificaciones' %}" class="btn btn-outline-secondary">Calificaciones ({{ calificaciones }})</a>
+  <a href="{% url 'corredores' %}" class="btn btn-outline-secondary">Corredores ({{ corredores }})</a>
+  {% if puede.ver_auditoria %}<a href="{% url 'auditoria' %}" class="btn btn-outline-secondary">Auditoría</a>{% endif %}
+</div>
+{% endblock %}

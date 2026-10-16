@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<div class="alert alert-danger display-6">
+  {{ titulo }}
+</div>
+
+<div class="row justify-content-center">
+  <form method="post" class="form col-md-8 col-lg-6 card p-3">
+    {% csrf_token %}
+    <p class="mb-1">¿Seguro que quieres eliminar este registro?</p>
+    <p class="fw-semibold">{{ objeto }}</p>
+    <div class="d-flex gap-2">
+      <input type="submit" class="btn btn-danger" value="Sí, eliminar">
+      <a href="{% url volver %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

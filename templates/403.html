@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block titulo %}Sin permiso{% endblock %}
+{% block contenido %}
+<div class="alert alert-danger display-6">
+  No tienes permiso para esto
+</div>
+<p>
+  {% if rol %}Tu rol (<strong>{{ rol }}</strong>) no permite esta acción.{% else %}Tu usuario todavía no tiene un rol asignado.{% endif %}
+  Si crees que es un error, pide a un administrador que revise tus permisos.
+</p>
+<a href="{% url 'inicio' %}" class="btn btn-outline-secondary">Volver al inicio</a>
+{% endblock %}

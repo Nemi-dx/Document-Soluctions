@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block titulo %}Auditoría{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Bitácora de auditoría
+</div>
+
+<div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+  <a href="{% url 'auditoria' %}?verificar=1" class="btn btn-outline-secondary"><i class="bi bi-shield-check"></i> Verificar integridad</a>
+  {% if estado %}
+    {% if estado.integra %}
+    <span class="badge text-bg-success fs-6">Cadena íntegra: ningún registro fue alterado ni borrado</span>
+    {% else %}
+    <span class="badge text-bg-danger fs-6">¡Cadena rota! Primer registro dañado: #{{ estado.primer_danado }}</span>
+    {% endif %}
+  {% endif %}
+  <span class="small text-body-secondary">Se muestran los 500 registros más recientes. Nadie puede editar ni borrar esta bitácora.</span>
+</div>
+
+{% if registros %}
+<div class="card card-body">
+  <table class="table table-striped table-sm tabla-datos">
+    <thead>
+      <tr>
+        <th>N°</th><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Acción</th><th>Registro</th><th>IP</th><th>Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in registros %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td data-order="{{ r.fecha|date:'U' }}">{{ r.fecha|date:"d-m-Y H:i:s" }}</td>
+        <td>{{ r.usuario }}</td>
+        <td>{{ r.rol|default:"—" }}</td>
+        <td>{{ r.get_accion_display }}</td>
+        <td>{% if r.modelo %}{{ r.modelo }} {{ r.objeto_id }} <span class="text-body-secondary small">{{ r.objeto }}</span>{% else %}—{% endif %}</td>
+        <td>{{ r.ip|default:"—" }}</td>
+        <td class="small"><code>{{ r.detalle|truncatechars:120 }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info">Aún no hay registros</div>
+{% endif %}
+{% endblock %}

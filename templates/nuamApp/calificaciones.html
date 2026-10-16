@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block titulo %}Calificaciones{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Listado de Calificaciones
+</div>
+
+{% if puede.calificar_bolsa or puede.calificar_corredor %}
+<a href="{% url 'calificacion_nuevo' %}" class="btn btn-info mb-3">Agregar Calificación</a>
+{% endif %}
+
+{% if calificaciones %}
+<div class="card card-body">
+  <table class="table table-striped tabla-datos">
+    <thead>
+      <tr>
+        <th>Certificado</th>
+        <th>Origen</th>
+        <th>Calificación</th>
+        <th>Observación</th>
+        <th>Fecha</th>
+        <th class="no-exportar">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in calificaciones %}
+      <tr>
+        <td>{{ c.certificado }}</td>
+        <td>
+          {% if c.origen == 'CORREDOR' %}<span class="badge text-bg-primary">Corredor{% if c.corredor %}: {{ c.corredor }}{% endif %}</span>
+          {% else %}<span class="badge text-bg-secondary">Bolsa</span>{% endif %}
+        </td>
+        <td>{{ c.calificacion }}</td>
+        <td>{{ c.observacion|truncatechars:60 }}</td>
+        <td>{{ c.fecha|date:"d-m-Y H:i" }}</td>
+        <td>
+          {% if c.modificable %}
+          <a href="{% url 'calificacion_editar' c.id %}" class="btn btn-warning" title="Editar"><i class="bi bi-pencil"></i></a>
+          <a href="{% url 'calificacion_eliminar' c.id %}" class="btn btn-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+  No hay calificaciones
+</div>
+{% endif %}
+{% endblock %}

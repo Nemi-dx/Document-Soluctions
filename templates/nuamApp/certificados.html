@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load l10n %}
+{% block titulo %}Certificados{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Listado de Certificados
+</div>
+
+{% if puede.escribir_certificados %}
+<a href="{% url 'certificado_nuevo' %}" class="btn btn-info mb-3">Agregar Certificado</a>
+<a href="{% url 'certificado_carga' %}" class="btn btn-outline-info mb-3">Carga masiva de PDF</a>
+{% endif %}
+
+{% if certificados %}
+<div class="card card-body">
+  <table class="table table-striped tabla-datos">
+    <thead>
+      <tr>
+        <th>RUT</th>
+        <th>Contribuyente</th>
+        <th>Año</th>
+        <th>Tipo</th>
+        <th>Monto</th>
+        <th>Corredor</th>
+        <th>Estado</th>
+        <th>Calificación vigente</th>
+        <th class="no-exportar">PDF</th>
+        <th class="no-exportar">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in certificados %}
+      <tr>
+        <td>{{ c.rut }}</td>
+        <td>{{ c.nombre_contribuyente }}</td>
+        <td>{{ c.ejercicio }}</td>
+        <td>{{ c.get_tipo_display }}</td>
+        <td class="num" data-order="{{ c.monto|unlocalize }}">{{ c.monto|floatformat:"0g" }}</td>
+        <td>{% if c.corredor %}{{ c.corredor }}{% else %}Bolsa{% endif %}</td>
+        <td>
+          {% if c.estado == 'VALIDADO' %}<span class="badge text-bg-success">Validado</span>
+          {% elif c.estado == 'RECHAZADO' %}<span class="badge text-bg-danger">Rechazado</span>
+          {% elif c.estado == 'PROCESADO' %}<span class="badge text-bg-info">Procesado</span>
+          {% else %}<span class="badge text-bg-warning">Pendiente</span>{% endif %}
+        </td>
+        <td>
+          {% with v=c.calificacion_vigente %}
+          {% if v %}{{ v.calificacion }} <small class="text-body-secondary">({{ v.get_origen_display }})</small>{% else %}—{% endif %}
+          {% endwith %}
+        </td>
+        <td>
+          {% if c.archivo %}
+          <a href="{% url 'certificado_archivo' c.id %}" target="_blank" class="btn btn-outline-secondary btn-sm" title="Ver PDF"><i class="bi bi-file-earmark-pdf"></i></a>
+          {% endif %}
+        </td>
+        <td>
+          {% if puede.escribir_certificados %}<a href="{% url 'certificado_editar' c.id %}" class="btn btn-warning" title="Editar"><i class="bi bi-pencil"></i></a>{% endif %}
+          {% if puede.eliminar_certificados %}<a href="{% url 'certificado_eliminar' c.id %}" class="btn btn-danger" title="Eliminar"><i class="bi bi-trash"></i></a>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+  No hay certificados
+</div>
+{% endif %}
+{% endblock %}

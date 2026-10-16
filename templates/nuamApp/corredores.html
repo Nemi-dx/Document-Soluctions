@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block titulo %}Corredores{% endblock %}
+{% block contenido %}
+<div class="alert alert-success display-6">
+  Listado de Corredores
+</div>
+
+{% if puede.gestionar_corredores %}
+<a href="{% url 'corredor_nuevo' %}" class="btn btn-info mb-3">Agregar Corredor</a>
+{% endif %}
+
+{% if corredores %}
+<div class="card card-body">
+  <table class="table table-striped tabla-datos">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>País</th>
+        <th>Estado</th>
+        <th class="no-exportar">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in corredores %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.get_pais_display }}</td>
+        <td>{% if c.activo %}Activo{% else %}Inactivo{% endif %}</td>
+        <td>
+          {% if puede.gestionar_corredores %}
+          <a href="{% url 'corredor_editar' c.id %}" class="btn btn-warning" title="Editar"><i class="bi bi-pencil"></i></a>
+          <a href="{% url 'corredor_eliminar' c.id %}" class="btn btn-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+  No hay corredores
+</div>
+{% endif %}
+{% endblock %}
